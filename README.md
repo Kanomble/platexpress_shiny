@@ -7,8 +7,8 @@ Transforming platexpress data visualization into shiny dashboards.
 - Folder description:
   - data: biolector and synergy test datasets
   - src:
-   - platexpress_module: functions for interactions with platexpress
-   - shiny: shiny R file with ui and server specifications 
+    - platexpress_module: functions for interactions with platexpress
+    - shiny: shiny R file with ui and server specifications 
 
 ## TODO
 - change and refactor code in the platexpress_interactions.R tryCatch blocks: 
