@@ -1,7 +1,38 @@
 #helper functions for shiny examples
 library(platexpress)
+#all functions that are executed in the server part of the shiny app are
+#written inside an tryCatch block:
+
+#result = tryCatch({
+#expr
+#}, warning = function(warning_condition) {
+#  warning-handler-code
+#}, error = function(error_condition) {
+#  error-handler-code
+#}, finally={
+#  cleanup-code
+#})
+
 
 #readPlateMap in tryCatch block
+checkFieldInputAndReturnPlate <- function(input,layoutFile){
+  if(is.null(input$fields) == FALSE){
+    layoutFields <- unlist(strsplit(input$fields,","))
+    layoutFields <- trimws(layoutFields)
+    if(input$afields != ""){
+      #afields are delivered as a string e.g. "sample, strain, Glc ..."
+      layoutAfields <- unlist(strsplit(input$afields,","))
+      layoutAfields <- trimws(layoutAfields)
+      plate <- readPlateMap(file = layoutFile$datapath,sep = input$sep, blank.id = input$blankId,fsep = input$fsep, fields = layoutFields, afields = layoutAfields, asep = input$asep)
+      return(plate)
+    } else {
+      #don't use afields and asep (inducer like Glc or Ace are not delivered as input)
+      plate <- readPlateMap(file = layoutFile$datapath,sep = input$sep, blank.id = input$blankId,fsep = input$fsep, fields = layoutFields)
+      return(plate)
+    }
+  }
+}
+
 readPlateLayoutFile <- function(input) {
   out <- tryCatch(
     {
@@ -9,32 +40,22 @@ readPlateLayoutFile <- function(input) {
       ext <- tools::file_ext(layoutFile$datapath)
       req(layoutFile)
       validate(need(ext == "csv", "Please upload a csv file"))
-      layoutFields <- unlist(strsplit(input$fields,","))
-      layoutFields <- trimws(layoutFields)
+      
+      return(checkFieldInputAndReturnPlate(input,layoutFile))
      
-      if(input$afields != ""){
-        
-        layoutAfields <- unlist(strsplit(input$afields,","))
-        layoutAfields <- trimws(layoutAfields)
-        plate <- readPlateMap(file = layoutFile$datapath,sep = input$sep, blank.id = input$blankId,fsep = input$fsep, fields = layoutFields, afields = layoutAfields, asep = input$asep)
-        return(plate)
-      } else {
-   
-        plate <- readPlateMap(file = layoutFile$datapath,sep = input$sep, blank.id = input$blankId,fsep = input$fsep, fields = layoutFields)
-        return(plate)
-      }
     },
     error=function(cond) {
-      print(cond)
+      #output error message
       message(cond)
     },
+    #the platexpress readPlateMap function outputs warnings...
     warning=function(cond) {
       #warning is always thrown in readPlateMap ...
-      layoutFields <- unlist(strsplit(input$fields,","))
-      layoutFields <- trimws(layoutFields)
-      
-      plate <- readPlateMap(file = layoutFile$datapath,sep = input$sep, blank.id = input$blankId,fsep = input$fsep, fields = layoutFields)
-      return(plate)
+      layoutFile <- input$file1
+      ext <- tools::file_ext(layoutFile$datapath)
+      req(layoutFile)
+      validate(need(ext == "csv", "Please upload a csv file"))
+      return(checkFieldInputAndReturnPlate(input,layoutFile))
     },
     finally={
       # NOTE:
@@ -62,7 +83,7 @@ readPlateDataFile <- function(input,plate) {
       columns <- unlist(strsplit(input$dataIds,","))
       columns <- trimws(columns)
 
-      data.raw <- readPlateData(files=dataFile$datapath,data.ids = columns,type=input$variable)
+      data.raw <- readDataFile(input)
       data <- correctBlanks(data=data.raw, plate=plate)
       
       #user response

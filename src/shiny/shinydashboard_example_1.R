@@ -43,7 +43,7 @@ ui <- dashboardPage(
             textInput("asep","substance:amount separator"),
             fileInput("file1", "Choose a plate layout CSV File", accept = ".csv"),
             #checkboxInput("header", "Header", TRUE),
-		        actionButton("changeLayout","Change Layout", class="btn btn-info")
+		        actionButton("changeLayout","Change Layout", icon = icon("file-upload"),class="btn btn-secondary")
 		        #dismiss all other submitButton's from the ui otherwise the actionButton's wan't
 		        #work anymore...
             #submitButton("Submit")
@@ -75,7 +75,7 @@ ui <- dashboardPage(
                           "BioLector" = "BioLector",
                           "BioLector Pro"="BioLectorPro")),
             fileInput("file2", "Choose a plate data CSV File", accept = ".csv"),
-            actionButton("loadData","Load Data",class="btn info-btn")
+            actionButton("loadData","Load Data",class="btn btn-secondary")
             #submitButton("Submit")
           ),
           box(
@@ -126,7 +126,7 @@ ui <- dashboardPage(
                 min = 1,
                 max = 12
               ),
-              actionButton("analyseGroups","Load Group Graph",class="btn btn-danger")
+              actionButton("analyseGroups","Load Group Graph",class="btn btn-secondary")
               #submitButton("Submit")
             )
           )
