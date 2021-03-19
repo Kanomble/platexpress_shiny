@@ -1,9 +1,10 @@
 version: "3.8"
 services:
   r_studio_docker_compose:
-    env_file:
-     - rocker.env
     image: rocker/rstudio
+    environment:
+      - ADD=shiny
+      - PASSWORD=****
     volumes:
       - .:/home/rstudio
     ports:
