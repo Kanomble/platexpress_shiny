@@ -1,3 +1,4 @@
 .local/*
 .config/rstudio/*
 docker-compose.yml
+.Rhistory

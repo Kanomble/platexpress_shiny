@@ -1,7 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(platexpress)
-source("platexpress_interactions.R")
+source("../platexpress_module/platexpress_interactions.R")
 
 #ui created with shinydashboard
 ui <- dashboardPage(
