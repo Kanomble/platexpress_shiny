@@ -43,7 +43,10 @@ ui <- dashboardPage(
             textInput("asep","substance:amount separator"),
             fileInput("file1", "Choose a plate layout CSV File", accept = ".csv"),
             #checkboxInput("header", "Header", TRUE),
-            submitButton("Submit")
+		        actionButton("changeLayout","Change Layout", class="btn btn-info")
+		        #dismiss all other submitButton's from the ui otherwise the actionButton's wan't
+		        #work anymore...
+            #submitButton("Submit")
           ),
           box(
             tableOutput("simplecsv"),
@@ -72,7 +75,8 @@ ui <- dashboardPage(
                           "BioLector" = "BioLector",
                           "BioLector Pro"="BioLectorPro")),
             fileInput("file2", "Choose a plate data CSV File", accept = ".csv"),
-            submitButton("Submit")
+            actionButton("loadData","Load Data",class="btn info-btn")
+            #submitButton("Submit")
           ),
           box(
             checkboxGroupInput("checkGroup", 
@@ -122,7 +126,8 @@ ui <- dashboardPage(
                 min = 1,
                 max = 12
               ),
-              submitButton("Submit")
+              actionButton("analyseGroups","Load Group Graph",class="btn btn-danger")
+              #submitButton("Submit")
             )
           )
         ),
@@ -145,35 +150,45 @@ server <- function(input, output) {
   getLayout <- reactive({
     readPlateLayoutFile(input)
   })
-  
   getPlateData <- reactive({
      readDataFile(input)
-    })
+  })
   
   output$simplecsv <- renderTable({
     req(input$file1)
     read.csv(input$file1$datapath)
   })
   #actual output
-  output$plate <- renderTable({
+  #table output creation triggered by action button of layout tab
+  plateLayout <- eventReactive(input$changeLayout,{
     getLayout()
   })
   
-  output$data <- renderPlot({
+  output$plate <- renderTable({
+    plateLayout()
+  })
+  
+  #plot output creation triggered by action button of data tab
+  plateData <- eventReactive(input$loadData,{
     plate <- getLayout()
     readPlateDataFile(input,plate)
   })
+  output$data <- renderPlot({
+    plateData()
+  })
   
-  output$groupPlot <- renderPlot({
-
+  #group plot output
+  groupPlot <- eventReactive(input$analyseGroups,{
     if(input$groups == ""){
       readPlateDataFile(input,getLayout())
     } else {
       getGroupPlot(input,getLayout())
-    }
-    
-  }
-  )
+    }    
+  })
+  
+  output$groupPlot <- renderPlot({
+    groupPlot()
+  })
   
 }
 
