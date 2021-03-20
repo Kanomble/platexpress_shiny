@@ -2,7 +2,7 @@
 Transforming platexpress data visualization into shiny dashboards.
 
 ## starting rstudio for developing
-Clone the git-repo into an desired directory. Edit the PASSWORD environment variable. Start docker desktop on windows or the docker client on ubuntu. Open a shell (e.g. the windows powershell) and change your current directory to the downloaded git-repo directory with the command `cd path-to-git-repo`. Start the docker container by using the `docker-compose up`. Visit the URL `localhost:8787` in an browser of your choice, google chrome or firefox are recommended. Use rstudio as user and the variable PASSWORD as your password. Load the `required_packages.R` script into your working directory (WD) and submit the code. This will install all necessary packages. 
+Clone the git-repo into an desired directory. Edit the PASSWORD environment variable. Start docker desktop on windows or the docker client on ubuntu. Open a shell (e.g. the windows powershell) and change your current directory to the downloaded git-repo directory with the command `cd path-to-git-repo`. Start the docker container by using the `docker-compose up` command. Visit the URL `localhost:8787` in an browser of your choice, google chrome or firefox are recommended. Use rstudio as user and the variable PASSWORD as your password. Load the `required_packages.R` script into your working directory (WD) and submit the code. This will install all necessary packages. 
 
 ## some notes on docker
 Sometimes you need to remove docker containers or images. If you do this keep in mind, that everything that has been installed inside the container is also removed by removing the container. Thus, all files that are inside the container and not on a shared directory will be removed to. The shared directory of this docker container is the whole directory in which you place the `docker-compose.yml` (default: the git-repo), which is set with the dot (".") in the `volume` section of the `docker-compose.yml`. 
@@ -17,9 +17,13 @@ If you need to re-install the docker container, first remove it. Use following c
     - biolector and synergy test datasets
   - src:
     - platexpress_module: functions for interactions with platexpress
-    - shiny: shiny R file with ui and server specifications 
+    - shiny: shiny R file with ui and server specifications
+- some data files have "," excep "." as decimal separators, this will cause the following error by reading in plate data:
+  - `Error in unlist(dat[tidx, (fidx + 1):ncol(dat)]) * 3600 : 
+  non-numeric argument to binary operator`
 
 ## TODO
+- add correctBlanks and skipWells functionality
 - change and refactor code in the platexpress_interactions.R tryCatch blocks: 
   - edit the warning block
   - add error handling
