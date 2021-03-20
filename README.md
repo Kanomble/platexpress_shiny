@@ -1,6 +1,11 @@
 # platexpress_shiny
 Transforming platexpress data visualization into shiny dashboards.
 
+## starting rstudio for developing
+Clone the git-repo into an desired directory. Edit the PASSWORD environment variable. Start docker desktop on windows or the docker client on ubuntu. Open a shell (e.g. the windows powershell) and change your current directory to the downloaded git-repo directory with the command `cd path-to-git-repo`. Start the docker container by using the `docker-compose up`. Visit the URL `localhost:8787` in an browser of your choice, google chrome or firefox are recommended. Use rstudio as user and the variable PASSWORD as your password. Load the `required_packages.R` script into your working directory (WD) and submit the code. This will install all necessary packages. 
+
+If you need to re-install the docker container, first remove it. Use following commands to identify the container-id: `docker ps` (if the container has started) or `docker ps --all`. Identify the container-id of the rocker/rstudio container and use the command: `docker rm <id>` to remove the container. If you realy want to clean up everything you can also delete the image. This can be done with the `docker rmi <image-id>` cmd, identify the image-id with `docker images`.
+
 ## INFO
 - use the `required_packages.R` script for installing additional packages
 - change the PASSWORD environment variable in the `docker-compose.yml` file before you submit the `docker-compose up` cmd
@@ -18,6 +23,3 @@ Transforming platexpress data visualization into shiny dashboards.
   - add final statements
 - change ui of groups tab
 - develop a plan where to go with this application
-
-## starting rstudio for developing
-Clone the git-repo into an desired directory. Start the docker container by using the `docker-compose up` command.
