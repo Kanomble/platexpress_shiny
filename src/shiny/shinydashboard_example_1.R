@@ -69,7 +69,6 @@ ui <- dashboardPage(
             textInput("dataIds", "data ids for readPlateData", "Riboflavine, Biomass"),
             textInput("dec","Decimal separator","."),
             textInput("skipWells","Wells to skip"),
-            #output in sidebarPanel
             selectInput("variable", "Plate type:",
                         c("BMG Optima and Mars v3.01 R" = "BMG",
                           "BMG Clariostar and Mars vXXX" = "BMG2",
