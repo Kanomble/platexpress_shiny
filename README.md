@@ -18,9 +18,6 @@ If you need to re-install the docker container, first remove it. Use following c
   - src:
     - platexpress_module: functions for interactions with platexpress
     - shiny: shiny R file with ui and server specifications
-- some data files have "," excep "." as decimal separators, this will cause the following error by reading in plate data:
-  - `Error in unlist(dat[tidx, (fidx + 1):ncol(dat)]) * 3600 : 
-  non-numeric argument to binary operator`
 
 ## TODO
 - add correctBlanks and skipWells functionality

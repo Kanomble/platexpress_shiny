@@ -67,6 +67,7 @@ ui <- dashboardPage(
           box(
             
             textInput("dataIds", "data ids for readPlateData", "Riboflavine, Biomass"),
+            textInput("dec","Decimal separator","."),
             #output in sidebarPanel
             selectInput("variable", "Plate type:",
                         c("BMG Optima and Mars v3.01 R" = "BMG",

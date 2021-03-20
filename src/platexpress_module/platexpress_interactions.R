@@ -117,7 +117,7 @@ readDataFile <- function(input){
   validate(need(ext == "csv", "Please upload a csv file"))
   columns <- unlist(strsplit(input$dataIds,","))
   columns <- trimws(columns)
-  data.raw <- readPlateData(files=dataFile$datapath,data.ids = columns,type=input$variable)
+  data.raw <- readPlateData(files=dataFile$datapath,data.ids = columns,type=input$variable,dec=input$dec)
   return(data.raw)
 }
 
