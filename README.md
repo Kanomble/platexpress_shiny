@@ -1,16 +1,21 @@
 # platexpress_shiny
 Transforming platexpress data visualization into shiny dashboards.
+## TODO
+- implement skipWells and correctBlanks functionality
 ## implementation of correctBlanks and skipWells plateXpress functions
-`raw <- skipWells(raw, skip = "A9")
+implemented this functionality:
+```R
+raw <- skipWells(raw, skip = "A9")
 plate <- skipWells(plate, skip = "A9")
 data <- correctBlanks(data=raw, plate=plate)
-viewPlate(data, rows = c("A","B","C"), cols = 1:9)`
+viewPlate(data, rows = c("A","B","C"), cols = 1:9)
+```
 
 ## starting rstudio for developing
 Clone the git-repo into an desired directory. Edit the PASSWORD environment variable. Start docker desktop on windows or the docker client on ubuntu. Open a shell (e.g. the windows powershell) and change your current directory to the downloaded git-repo directory with the command `cd path-to-git-repo`. Start the docker container by using the `docker-compose up` command. Visit the URL `localhost:8787` in an browser of your choice, google chrome or firefox are recommended. Use rstudio as user and the variable PASSWORD as your password. Load the `required_packages.R` script into your working directory (WD) and submit the code. This will install all necessary packages. 
 
 ## some notes on docker
-Sometimes you need to remove docker containers or images. If you do this keep in mind, that everything that has been installed inside the container is also removed by removing the container. Thus, all files that are inside the container and not on a shared directory will be removed to. The shared directory of this docker container is the whole directory in which you place the `docker-compose.yml` (default: the git-repo), which is set with the dot (".") in the `volume` section of the `docker-compose.yml`. 
+Sometimes you need to remove docker containers or images. If you do this, keep in mind, that everything that has been installed inside the container is also removed by removing the container. Thus, all files that are inside the container and not on a shared directory will be removed to. The shared directory of this docker container is the whole directory in which you place the `docker-compose.yml` (default: the git-repo), which is set with the dot (".") in the `volume` section of the `docker-compose.yml`. 
 
 If you need to re-install the docker container, first remove it. Use following commands to identify the container-id: `docker ps` (if the container has started) or `docker ps --all`. Identify the container-id of the rocker/rstudio container and use the command: `docker rm <id>` to remove the container. If you realy want to clean up everything you can also delete the image. This can be done with the `docker rmi <image-id>` cmd, identify the image-id with `docker images`.
 

@@ -84,11 +84,7 @@ readPlateDataFile <- function(input,plate) {
       columns <- trimws(columns)
 
       data.raw <- readDataFile(input)
-      if(input$skipWells != ""){
-        wellsToSkip <- unlist(strsplit(input$skipWells,","))
-        wellsToSkip <- trimws(wellsToSkip)
-        data.raw <- skipWells(data.raw,skip=wellsToSkip)
-      }
+
       
       data <- correctBlanks(data=data.raw, plate=plate)
       
@@ -124,6 +120,11 @@ readDataFile <- function(input){
   columns <- unlist(strsplit(input$dataIds,","))
   columns <- trimws(columns)
   data.raw <- readPlateData(files=dataFile$datapath,data.ids = columns,type=input$variable,dec=input$dec)
+  if(input$skipWells != ""){
+    wellsToSkip <- unlist(strsplit(input$skipWells,","))
+    wellsToSkip <- trimws(wellsToSkip)
+    data.raw <- skipWells(data.raw,skip=wellsToSkip)
+  }
   return(data.raw)
 }
 
@@ -141,6 +142,12 @@ getGroupPlot <- function(input,plate) {
     },
     warning=function(cond) {
       message(cond)
+      data.raw <- readDataFile(input)
+      dataGroup <- unlist(strsplit(input$groups,","))
+      dataGroup <- trimws(dataGroup)
+      dataGroup <- getGroups(plate,by=dataGroup)
+      return(viewGroups(data.raw,groups = dataGroup,lwd.orig = input$linewidth,nrow=input$nrows))
+      
     },
     finally={
     }
