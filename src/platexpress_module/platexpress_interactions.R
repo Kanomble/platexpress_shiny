@@ -84,6 +84,12 @@ readPlateDataFile <- function(input,plate) {
       columns <- trimws(columns)
 
       data.raw <- readDataFile(input)
+      if(input$skipWells != ""){
+        wellsToSkip <- unlist(strsplit(input$skipWells,","))
+        wellsToSkip <- trimws(wellsToSkip)
+        data.raw <- skipWells(data.raw,skip=wellsToSkip)
+      }
+      
       data <- correctBlanks(data=data.raw, plate=plate)
       
       #user response

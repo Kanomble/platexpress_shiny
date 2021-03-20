@@ -1,5 +1,10 @@
 # platexpress_shiny
 Transforming platexpress data visualization into shiny dashboards.
+## implementation of correctBlanks and skipWells plateXpress functions
+`raw <- skipWells(raw, skip = "A9")`
+`plate <- skipWells(plate, skip = "A9")`
+`data <- correctBlanks(data=raw, plate=plate)`
+`viewPlate(data, rows = c("A","B","C"), cols = 1:9)`
 
 ## starting rstudio for developing
 Clone the git-repo into an desired directory. Edit the PASSWORD environment variable. Start docker desktop on windows or the docker client on ubuntu. Open a shell (e.g. the windows powershell) and change your current directory to the downloaded git-repo directory with the command `cd path-to-git-repo`. Start the docker container by using the `docker-compose up` command. Visit the URL `localhost:8787` in an browser of your choice, google chrome or firefox are recommended. Use rstudio as user and the variable PASSWORD as your password. Load the `required_packages.R` script into your working directory (WD) and submit the code. This will install all necessary packages. 
