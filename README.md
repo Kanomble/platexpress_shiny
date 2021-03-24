@@ -20,6 +20,7 @@ If you need to re-install the docker container, first remove it. Use following c
     - shiny: shiny R file with ui and server specifications
 
 ## TODO
+- Layout file creation with (shinyMatrix)[https://cran.r-project.org/web/packages/shinyMatrix/readme/README.html]
 - add validate and need shiny functions in server
 - add boxData functionality and refactor functions
 - documentation
