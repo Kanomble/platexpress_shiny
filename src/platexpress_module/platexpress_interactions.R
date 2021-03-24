@@ -12,6 +12,7 @@ library(platexpress)
 #}, finally={
 #  cleanup-code
 #})
+#try(func,error)
 
 
 #readPlateMap in tryCatch block
