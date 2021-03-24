@@ -1,6 +1,10 @@
 # platexpress_shiny
 Transforming platexpress data for visualization in shiny dashboards.
 
+## validate and need server functionality
+
+Shiny best practice for [error handling](https://shiny.rstudio.com/articles/validation.html) involves utilization of the `validate(...,errorClass= character(0))` and `need()` for output rendering functions. With the keyword argument `errorClass`, special CSS classes can be applied to the error message. Objects of the "try-error" class can also serve as input for `validate`.
+
 ## starting rstudio for developing
 Clone the git-repo into an desired directory. Edit the PASSWORD environment variable. Start docker desktop on windows or the docker client on ubuntu. Open a shell (e.g. the windows powershell) and change your current directory to the downloaded git-repo directory with the command `cd path-to-git-repo`. Start the docker container by using the `docker-compose up` command. Visit the URL `localhost:8787` in an browser of your choice, google chrome or firefox are recommended. Use rstudio as user and the variable PASSWORD as your password. Load the `required_packages.R` script into your working directory (WD) and submit the code. This will install all necessary packages. 
 

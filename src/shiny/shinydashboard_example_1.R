@@ -149,14 +149,25 @@ server <- function(input, output) {
   #reactive functions / does only reload if input changes
   #maybe not needed because of submit buttons
   getLayout <- reactive({
+    layoutFile <- input$file1
+    ext <- tools::file_ext(layoutFile$datapath)
+    req(layoutFile)
+    validate(need(ext == "csv", "Please upload a csv file"))
     readPlateLayoutFile(input)
   })
   getPlateData <- reactive({
-     readDataFile(input)
+    dataFile <- input$file2
+    ext <- tools::file_ext(dataFile$datapath)
+    req(dataFile)
+    validate(need(ext == "csv", "Please upload a csv file"))
+    readDataFile(input)
   })
   
   output$simplecsv <- renderTable({
-    req(input$file1)
+    layoutFile <- input$file1
+    ext <- tools::file_ext(layoutFile$datapath)
+    req(layoutFile)
+    validate(need(ext == "csv", "Please upload a csv file"))
     read.csv(input$file1$datapath)
   })
   #actual output
@@ -171,7 +182,11 @@ server <- function(input, output) {
   
   #plot output creation triggered by action button of data tab
   plateData <- eventReactive(input$loadData,{
+    validate(
+      need(!is.null(input$file1), "Load a plate layout file for data parsing!")
+    )
     plate <- getLayout()
+
     readPlateDataFile(input,plate)
   })
   output$data <- renderPlot({
