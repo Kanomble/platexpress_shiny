@@ -33,7 +33,7 @@ checkFieldInputAndReturnPlate <- function(input,layoutFile){
     }
   }
 }
-
+#readPlateLayoutFile in trycatch form
 readPlateLayoutFile <- function(input) {
   out <- tryCatch(
     {
@@ -69,6 +69,11 @@ readPlateLayoutFile <- function(input) {
   )    
   return(out)
 }
+#read
+
+
+
+
 
 #readPlateData
 
