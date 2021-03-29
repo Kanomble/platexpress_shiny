@@ -69,14 +69,9 @@ readPlateLayoutFile <- function(input) {
   )    
   return(out)
 }
-#read
 
 
-
-
-
-#readPlateData
-
+####
 #readPlateMap in tryCatch block
 readPlateDataFile <- function(input,plate) {
   out <- tryCatch(
