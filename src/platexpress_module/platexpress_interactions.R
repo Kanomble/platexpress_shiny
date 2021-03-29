@@ -14,6 +14,7 @@ library(platexpress)
 #})
 
 
+
 #readPlateMap in tryCatch block
 checkFieldInputAndReturnPlate <- function(input,layoutFile){
   if(is.null(input$fields) == FALSE){

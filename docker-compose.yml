@@ -4,7 +4,7 @@ services:
     image: rocker/rstudio
     environment:
       - ADD=shiny
-      - PASSWORD=****
+      - PASSWORD=12345
     volumes:
       - .:/home/rstudio
     ports:
