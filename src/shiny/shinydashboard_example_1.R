@@ -5,6 +5,7 @@ source("../platexpress_module/platexpress_interactions.R")
 
 #ui created with shinydashboard
 ui <- dashboardPage(
+  title="shiny plateXpress visualization",
   dashboardHeader(title = "Platexpress Dashboard"),
   #sidebar element with tabs
   dashboardSidebar(
@@ -149,14 +150,26 @@ server <- function(input, output) {
   #reactive functions / does only reload if input changes
   #maybe not needed because of submit buttons
   getLayout <- reactive({
+    layoutFile <- input$file1
+    #txt files as csv files? 
+    ext <- tools::file_ext(layoutFile$datapath)
+    req(layoutFile)
+    validate(need(ext == "csv", "Please upload a csv file (file with .csv extension)"))
     readPlateLayoutFile(input)
   })
   getPlateData <- reactive({
-     readDataFile(input)
+    dataFile <- input$file2
+    ext <- tools::file_ext(dataFile$datapath)
+    req(dataFile)
+    validate(need(ext == "csv", "Please upload a csv file (file with .csv extension)"))
+    readDataFile(input)
   })
   
   output$simplecsv <- renderTable({
-    req(input$file1)
+    layoutFile <- input$file1
+    ext <- tools::file_ext(layoutFile$datapath)
+    req(layoutFile)
+    validate(need(ext == "csv", "Please upload a csv file (file with .csv extension)"))
     read.csv(input$file1$datapath)
   })
   #actual output
@@ -171,7 +184,12 @@ server <- function(input, output) {
   
   #plot output creation triggered by action button of data tab
   plateData <- eventReactive(input$loadData,{
+    validate(
+      need(!is.null(input$file1), "Load a plate layout file for data parsing!")
+    )
+    #getLayout additionally has a validate and need block
     plate <- getLayout()
+
     readPlateDataFile(input,plate)
   })
   output$data <- renderPlot({
@@ -180,6 +198,15 @@ server <- function(input, output) {
   
   #group plot output
   groupPlot <- eventReactive(input$analyseGroups,{
+    
+    validate(
+      need(!is.null(input$file1), "Load a plate layout file for data parsing!")
+    )
+    
+    validate(
+      need(!is.null(input$file2), "Load a plate data file for data parsing!")
+    )
+    
     if(input$groups == ""){
       readPlateDataFile(input,getLayout())
     } else {

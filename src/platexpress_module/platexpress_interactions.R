@@ -12,10 +12,13 @@ library(platexpress)
 #}, finally={
 #  cleanup-code
 #})
+#try(func,error)
 
 
 #readPlateMap in tryCatch block
+#why are input$fields checked? --> because of warnings in the readPlateLayoutFile function
 checkFieldInputAndReturnPlate <- function(input,layoutFile){
+  #code if fields specifications are given
   if(is.null(input$fields) == FALSE){
     layoutFields <- unlist(strsplit(input$fields,","))
     layoutFields <- trimws(layoutFields)
@@ -36,13 +39,8 @@ checkFieldInputAndReturnPlate <- function(input,layoutFile){
 readPlateLayoutFile <- function(input) {
   out <- tryCatch(
     {
-      layoutFile <- input$file1
-      ext <- tools::file_ext(layoutFile$datapath)
-      req(layoutFile)
-      validate(need(ext == "csv", "Please upload a csv file"))
-      
+      #if input$fields is null no output is created
       return(checkFieldInputAndReturnPlate(input,layoutFile))
-     
     },
     error=function(cond) {
       #output error message
@@ -51,10 +49,6 @@ readPlateLayoutFile <- function(input) {
     #the platexpress readPlateMap function outputs warnings...
     warning=function(cond) {
       #warning is always thrown in readPlateMap ...
-      layoutFile <- input$file1
-      ext <- tools::file_ext(layoutFile$datapath)
-      req(layoutFile)
-      validate(need(ext == "csv", "Please upload a csv file"))
       return(checkFieldInputAndReturnPlate(input,layoutFile))
     },
     finally={
