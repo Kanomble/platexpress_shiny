@@ -1,9 +1,6 @@
 # platexpress_shiny
 Transforming platexpress data for visualization in shiny dashboards.
 
-## TODO: validate and need
-- check Multiple conditions section of: [error handling](https://shiny.rstudio.com/articles/validation.html)
-
 ## validate and need server functionality
 Shiny best practice for [error handling](https://shiny.rstudio.com/articles/validation.html) involves utilization of the `validate(...,errorClass= character(0))` and `need()` for output rendering functions. With the keyword argument `errorClass`, special CSS classes can be applied to the error message. Objects of the "try-error" class can also serve as input for `validate`.
 
@@ -36,7 +33,8 @@ If you need to re-install the docker container, first remove it. Use following c
   - add final statements
 - change ui of groups tab
 - develop a plan where to go with this application
-
+- check Multiple conditions section of: [error handling](https://shiny.rstudio.com/articles/validation.html)
+ 
 ## implementation of correctBlanks and skipWells plateXpress functions
 implemented this functionality:
 ```R
