@@ -1,7 +1,7 @@
 # platexpress_shiny
 Transforming platexpress data for visualization in shiny dashboards.
 
-##TODO: validate and need
+## TODO: validate and need
 - check Multiple conditions section of: [error handling](https://shiny.rstudio.com/articles/validation.html)
 
 ## validate and need server functionality
