@@ -24,6 +24,7 @@ If you need to re-install the docker container, first remove it. Use following c
   1.read into the topic [x]
   ***
 #### documentation
+  ***
 #### change and refactor code in the platexpress_interactions.R tryCatch blocks: 
   1.edit the warning block
   
@@ -37,11 +38,12 @@ If you need to re-install the docker container, first remove it. Use following c
     2.3 reading into topic [x]
   
   3. add final statements
-  
+  *** 
 #### change ui of groups tab
   1.reading into the topic [x]
+  ***
 #### develop a plan where to go with this application
-  
+  ***
 
 ## implementation of correctBlanks and skipWells plateXpress functions
 implemented this functionality:
