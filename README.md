@@ -28,12 +28,13 @@ If you need to re-install the docker container, first remove it. Use following c
   - edit the warning block
   
   - add error handling
-    ..1.displore alternatives to validate need [x]
-    ..*purr::possibly,purr::safely
-    ..*Common Lisp
-    ..*withCallingsHandlers(),try()
-    ..2.started working on TryCatch Blocks []
-    ..3.reading into topic [x]
+    -displore alternatives to validate need [x]
+    -purr::possibly,purr::safely
+    -Common Lisp
+    -withCallingsHandlers(),try()
+    
+    -started working on TryCatch Blocks []
+    -reading into topic [x]
 
   - add final statements
   
