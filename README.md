@@ -36,7 +36,8 @@ If you need to re-install the docker container, first remove it. Use following c
     2.2 started working on TryCatch Blocks []
 
     2.3 reading into topic [x]
-  
+    
+    2.4 installing reactlog for better understanding of reactivity [x]
   3. add final statements
   *** 
 #### change ui of groups tab
