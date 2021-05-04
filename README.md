@@ -22,7 +22,7 @@ If you need to re-install the docker container, first remove it. Use following c
 ## TODO
 #### add boxData functionality and refactor functions
   1.read into the topic [x]
-  
+  ***
 #### documentation
 #### change and refactor code in the platexpress_interactions.R tryCatch blocks: 
   1.edit the warning block
@@ -30,13 +30,13 @@ If you need to re-install the docker container, first remove it. Use following c
   2. add error handling
   
     2.1 displore alternatives to validate need [x]
-    ..* purr::possibly,purr::safely, Common Lisp, withCallingsHandlers(),try()
+    purr::possibly,purr::safely, Common Lisp, withCallingsHandlers(),try()
   
-    started working on TryCatch Blocks []
+    2.2 started working on TryCatch Blocks []
 
-    reading into topic [x]
+    2.3 reading into topic [x]
   
-  - add final statements
+  3. add final statements
   
 #### change ui of groups tab
   1.reading into the topic [x]
