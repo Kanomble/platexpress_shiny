@@ -30,7 +30,7 @@ If you need to re-install the docker container, first remove it. Use following c
   2. add error handling
   
     2.1 displore alternatives to validate need [x]
-    ..*purr::possibly,purr::safely, Common Lisp, withCallingsHandlers(),try()
+    ..* purr::possibly,purr::safely, Common Lisp, withCallingsHandlers(),try()
   
     started working on TryCatch Blocks []
 
@@ -38,9 +38,9 @@ If you need to re-install the docker container, first remove it. Use following c
   
   - add final statements
   
-- change ui of groups tab
+#### H4 change ui of groups tab
   1.reading into the topic [x]
-- develop a plan where to go with this application
+#### H4 develop a plan where to go with this application
   
 
 ## implementation of correctBlanks and skipWells plateXpress functions
