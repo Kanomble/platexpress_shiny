@@ -20,11 +20,11 @@ If you need to re-install the docker container, first remove it. Use following c
     - shiny: shiny R file with ui and server specifications
 
 ## TODO
-#### H4 add boxData functionality and refactor functions
+#### add boxData functionality and refactor functions
   1.read into the topic [x]
   
-#### H4 documentation
-#### H4 change and refactor code in the platexpress_interactions.R tryCatch blocks: 
+####documentation
+#### change and refactor code in the platexpress_interactions.R tryCatch blocks: 
   1.edit the warning block
   
   2. add error handling
@@ -38,9 +38,9 @@ If you need to re-install the docker container, first remove it. Use following c
   
   - add final statements
   
-#### H4 change ui of groups tab
+#### change ui of groups tab
   1.reading into the topic [x]
-#### H4 develop a plan where to go with this application
+#### develop a plan where to go with this application
   
 
 ## implementation of correctBlanks and skipWells plateXpress functions
