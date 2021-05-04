@@ -25,6 +25,7 @@ If you need to re-install the docker container, first remove it. Use following c
 - change and refactor code in the platexpress_interactions.R tryCatch blocks: 
   - edit the warning block
   - add error handling
+    [X] Displore alternatives for validate need (purr::possibly,purr::)
   - add final statements
 - change ui of groups tab
 - develop a plan where to go with this application
