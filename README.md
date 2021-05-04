@@ -30,9 +30,7 @@ If you need to re-install the docker container, first remove it. Use following c
   - add error handling
   ***
     -displore alternatives to validate need [x]
-    -purr::possibly,purr::safely
-    -Common Lisp
-    -withCallingsHandlers(),try()
+    purr::possibly,purr::safely, Common Lisp, withCallingsHandlers(),try()
   ***  
     -started working on TryCatch Blocks []
   ***
