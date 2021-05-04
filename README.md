@@ -21,14 +21,26 @@ If you need to re-install the docker container, first remove it. Use following c
 
 ## TODO
 - add boxData functionality and refactor functions
+  1.read into the topic [x]
+  
 - documentation
 - change and refactor code in the platexpress_interactions.R tryCatch blocks: 
   - edit the warning block
+  
   - add error handling
-    [X] Displore alternatives for validate need (purr::possibly,purr::)
+    1.displore alternatives to validate need [x]
+    ..*purr::possibly,purr::safely
+    ..*Common Lisp
+    ..*withCallingsHandlers(),try()
+    2.started working on TryCatch Blocks []
+    3.reading into topic [x]
+
   - add final statements
+  
 - change ui of groups tab
+  1.reading into the topic [x]
 - develop a plan where to go with this application
+  
 
 ## implementation of correctBlanks and skipWells plateXpress functions
 implemented this functionality:
