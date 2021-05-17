@@ -4,4 +4,7 @@ install.packages("shiny")
 install.packages("shinydashboard")
 library(devtools)
 install_github("raim/platexpress")
-
+install.packages("purr")
+install.packages("react_log")
+install.packages("shinyMatrix")
+install.packages("MASS")
