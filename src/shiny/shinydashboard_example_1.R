@@ -1,7 +1,12 @@
 library(shiny)
 library(shinydashboard)
+#library(MASS)
 library(platexpress)
 source("../platexpress_module/platexpress_interactions.R")
+
+#options(shiny.reactlog = TRUE)
+
+#m <- matrix(runif(12),6, 2, dimnames = list(NULL, c("x", "y")))
 
 #ui created with shinydashboard
 ui <- dashboardPage(
@@ -11,7 +16,8 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Plate Layout", tabName = "layout", icon = icon("file-upload")),
       menuItem("Plate Data", tabName = "data", icon = icon("filter")),
-      menuItem("View Groups", tabName = "groups", icon = icon("vials"))
+      menuItem("View Groups", tabName = "groups", icon = icon("vials")),
+      menuItem("MatrixLayout", tabName = "matlay", icon = icon("outdent"))
     )
   ),
   #definitions of a tab content inside dashboardBody
@@ -96,8 +102,9 @@ ui <- dashboardPage(
                          h3("Select the last column to display"), 
                          value = 12,
                          min = 1,
-                         max = 12)
-            
+                         max = 12),
+            box(textOutput("PlateDateErrorText")
+            )
           )
         )
 
@@ -139,9 +146,30 @@ ui <- dashboardPage(
         )
 
         
+      ),
+        tabItem(
+        #ui for Layoutcreation
+        tabName = "matlay",
+        fluidRow(
+          box(
+            column(
+              12,
+              matrixInput(
+                "sample",
+                value = m,
+                rows = list(
+                  extend = TRUE,editableNames = TRUE
+                ),
+                cols = list(
+                  names = TRUE,editableNames = TRUE,extend = TRUE
+                )
+              ),
+              actionButton("SaveMatrix","Save Matrix", icon = icon("download"),class="btn btn-secondary")
+           )
+          )
+        )
       )
-
-    )
+    )#
   )
 )
 
@@ -190,7 +218,30 @@ server <- function(input, output) {
   output$groupPlot <- renderPlot({
     groupPlot()
   })
+  #####
+  #shinyMatrix
+  observeEvent(input$SaveMatrix ,{write.matrix(input$sample,'Layout.csv')})
+  #####
+  #ErrorHandling
+  
+  output$PlateDateErrorText <- renderText({
+    PlateDateError()
+  })
+  PlateDataError <- function (input,output){
+    reactive(input$dataIds, {
+      #print(paste0("You have chosen: ", input$checkGroups))
+      #when(!is.null(input$dataIds),print(input$dataIds))
+      print(input$dataIds)
+    })
+  }
+  ####
+  isthereaFile <- observeEvent (input$changeLayout, {
+    validate(
+      need(!is.null(input$file1),"Please upload a file!")
+    )
+  })
   
 }
 
 shinyApp(ui, server)
+
