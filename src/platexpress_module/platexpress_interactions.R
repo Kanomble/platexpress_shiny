@@ -12,7 +12,16 @@ library(platexpress)
 #}, finally={
 #  cleanup-code
 #})
+#m <- matrix(runif(12),6, 2, dimnames = list(NULL, c("x", "y")))
+m <- matrix(1:96, nrow = 8, ncol = 12, dimnames = list(c("A", "B","C","D","E","F","G","H"),
+                                                       c("1", "2", "3","4","5","6","7","8","9","10","11","12")))
+                                                       
 
+
+
+
+#matcsv_helper <- function(input,filename){x =write.csv(x="test",file=filename)
+#print(x)}
 
 
 #readPlateMap in tryCatch block
@@ -155,3 +164,8 @@ getGroupPlot <- function(input,plate) {
   )    
   return(out)
 }
+
+
+
+  
+

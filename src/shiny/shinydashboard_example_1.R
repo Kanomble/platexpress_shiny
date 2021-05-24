@@ -1,12 +1,12 @@
 library(shiny)
 library(shinydashboard)
-#library(MASS)
+library(MASS)
 library(platexpress)
 source("../platexpress_module/platexpress_interactions.R")
 
 #options(shiny.reactlog = TRUE)
 
-#m <- matrix(runif(12),6, 2, dimnames = list(NULL, c("x", "y")))
+
 
 #ui created with shinydashboard
 ui <- dashboardPage(
@@ -164,16 +164,32 @@ ui <- dashboardPage(
                   names = TRUE,editableNames = TRUE,extend = TRUE
                 )
               ),
-              actionButton("SaveMatrix","Save Matrix", icon = icon("download"),class="btn btn-secondary")
+              actionButton("SaveMatrix","Create Layoutfile", icon = icon("download"),class="btn btn-secondary")
+              
            )
-          )
+          ),
+          box(title = 'Output Preview',
+              collapsible = TRUE,
+              collapsed = T,
+              status = 'primary',
+            column(12,
+            tableOutput("testmat")
+            )
+          ),
+          box(
+            title=' ShinyMatrix Help',
+            collapsible = TRUE,
+            collapsed=TRUE,
+            status = 'primary',
+            Helptext_matlay_col
+          ),
         )
       )
     )#
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output,session) {
   #reactive functions / does only reload if input changes
   #maybe not needed because of submit buttons
   getLayout <- reactive({
@@ -220,7 +236,12 @@ server <- function(input, output) {
   })
   #####
   #shinyMatrix
-  observeEvent(input$SaveMatrix ,{write.matrix(input$sample,'Layout.csv')})
+  observeEvent(input$SaveMatrix ,{write.table(input$sample,col.names=NA,'../../Layout.csv')})
+  
+  #matcsv <- observeEvent(input$SaveMatrix ,{matcsv_helper(input,"../../Layout.csv")
+   # print("Funktioniert das ?")})
+  
+  output$testmat <- renderTable(input$sample)
   #####
   #ErrorHandling
   
@@ -237,7 +258,7 @@ server <- function(input, output) {
   ####
   isthereaFile <- observeEvent (input$changeLayout, {
     validate(
-      need(!is.null(input$file1),"Please upload a file!")
+      need(!is.null(input$file1),"Plea se upload a file!")
     )
   })
   
