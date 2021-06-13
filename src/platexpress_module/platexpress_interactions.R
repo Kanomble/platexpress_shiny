@@ -13,13 +13,15 @@ library(platexpress)
 #  cleanup-code
 #})
 #m <- matrix(runif(12),6, 2, dimnames = list(NULL, c("x", "y")))
-m <- matrix(1:96, nrow = 8, ncol = 12, dimnames = list(c("A", "B","C","D","E","F","G","H"),
-                                                       c("1", "2", "3","4","5","6","7","8","9","10","11","12")))
-                                                       
+#m <- matrix(1:96, nrow = 8, ncol = 12, dimnames = list(c("A", "B","C","D","E","F","G","H"),
+                                                       #c("1", "2", "3","4","5","6","7","8","9","10","11","12")))
+
+m <- matrix( nrow = 8, ncol = 1,dimnames = list(c("A", "B","C","D","E","F","G","H")))
 
 
 
-
+m[1:12]
+Helptext_matlay_col <- helpText("Helptext")
 #matcsv_helper <- function(input,filename){x =write.csv(x="test",file=filename)
 #print(x)}
 

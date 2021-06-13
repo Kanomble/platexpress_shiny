@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(MASS)
 library(platexpress)
+library(rhandsontable)
 source("../platexpress_module/platexpress_interactions.R")
 
 #options(shiny.reactlog = TRUE)
@@ -151,22 +152,27 @@ ui <- dashboardPage(
         #ui for Layoutcreation
         tabName = "matlay",
         fluidRow(
-          box(
+          # box(
             column(
               12,
-              matrixInput(
-                "sample",
-                value = m,
-                rows = list(
-                  extend = TRUE,editableNames = TRUE
-                ),
-                cols = list(
-                  names = TRUE,editableNames = TRUE,extend = TRUE
-                )
-              ),
-              actionButton("SaveMatrix","Create Layoutfile", icon = icon("download"),class="btn btn-secondary")
               
-           )
+              rhandsontable::rHandsontableOutput('mat_sample'),
+              br(),
+              # matrixInput(
+              #   value = m,
+              #   rows = list(
+              #     extend = TRUE,editableNames = TRUE
+              #   ),
+              #   cols = list(
+              #     names = TRUE,editableNames = TRUE,extend = TRUE
+              #   )
+              # ),
+              actionButton('ClearMatrix', 'Clear Values'),
+              downloadButton('SaveMatrix'),
+              hr()
+              #actionButton("SaveMatrix","Create Layoutfile", icon = icon("download"),class="btn btn-secondary")
+              
+           # )
           ),
           box(title = 'Output Preview',
               collapsible = TRUE,
@@ -182,7 +188,7 @@ ui <- dashboardPage(
             collapsed=TRUE,
             status = 'primary',
             Helptext_matlay_col
-          ),
+          )
         )
       )
     )#
@@ -236,7 +242,100 @@ server <- function(input, output,session) {
   })
   #####
   #shinyMatrix
-  observeEvent(input$SaveMatrix ,{write.table(input$sample,col.names=NA,'../../Layout.csv')})
+  #observeEvent(input$SaveMatrix ,{write.table(input$sample,col.names=NA,'../../Layout.csv')})
+  
+  data_hot <- reactiveVal(matrix('', 8, 12))
+  
+  observeEvent(input$ClearMatrix,{
+    output$mat_sample <- renderRHandsontable({
+      
+      dff = matrix('', 8, 12)
+      colnames(dff) = c(1:12)
+      
+      rhandsontable(dff, rowHeaders = T) %>% 
+        hot_cols(colWidths = 120)
+    })
+
+  })
+  
+  output$mat_sample <- renderRHandsontable({
+
+    dff = data_hot()
+    colnames(dff) = c(1:12)
+    
+    rhandsontable(dff, rowHeaders = T) %>% 
+      hot_cols(colWidths = 120)
+  })
+  
+  
+  output$SaveMatrix <- downloadHandler(
+  filename = function() {
+    #'results.txt'
+    'layout.csv'
+  },
+  content = function(file) {
+    v = hot_to_r(input$mat_sample)
+    
+    results = '\t'
+    results =  paste0(results, paste(1:8, collapse =  '\t'))
+    results = paste0(results)
+    for(i in 1:nrow(v)){
+      
+      row_i = LETTERS[i]
+      
+      res_i = paste0(row_i, '\t')
+      for(k in 1:ncol(v)){
+        
+        vik = v[i,k] %>% as.character()
+        
+        if(vik!=''){
+          print(vik)
+          if(vik == 'blank'){
+            res_i = paste0(res_i, 
+                           vik,
+                           '\t',
+                           '')
+          }else{
+            res_i = paste0(res_i, 
+                           strsplit(vik,' ')[[1]][1],
+                           '\n', 
+                           strsplit(vik,' ')[[1]][2],
+                           '\t',
+                           '')
+          }
+
+        }
+        
+      }
+      results = paste(results,'\n',res_i )
+    }
+    write.matrix(results, file)
+    
+     #write.csv(results, file)
+  },
+  contentType = NULL
+  
+  )
+  # observeEvent(input$SaveMatrix ,{
+  #   
+  #   v = hot_to_r(input$mat_sample)
+  #     save(v, file = 'v.Rdata')
+  #   print(hot_to_r(input$mat_sample))
+  #   # browser()
+  #   # write.table(input$sample,'../../Layout.csv')
+  #   #                               print(input$SaveMatrix)
+  #                                 
+  #                                 })
+  
+  #loop for /t and /n cleaning
+
+  
+  
+  observeEvent(input$sample, {
+    print(input$sample)
+    print(class(input$sample))
+    })
+  
   
   #matcsv <- observeEvent(input$SaveMatrix ,{matcsv_helper(input,"../../Layout.csv")
    # print("Funktioniert das ?")})
@@ -265,4 +364,5 @@ server <- function(input, output,session) {
 }
 
 shinyApp(ui, server)
+
 
