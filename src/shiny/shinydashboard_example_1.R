@@ -3,6 +3,9 @@ library(shinydashboard)
 library(MASS)
 library(platexpress)
 library(rhandsontable)
+library(dplyr)
+library(featurefinder)
+library(dashboardthemes)
 source("../platexpress_module/platexpress_interactions.R")
 
 #options(shiny.reactlog = TRUE)
@@ -24,6 +27,8 @@ ui <- dashboardPage(
   #definitions of a tab content inside dashboardBody
   #ui's are reachable with tabItems(tabItem(tabName),tabItem(...))
   dashboardBody(
+    #shinyDashboardThemes(
+      #theme = "purple_gradient"),
     tabItems(
       tabItem(
       #ui for readPlateMap 
@@ -169,12 +174,13 @@ ui <- dashboardPage(
               # ),
               actionButton('ClearMatrix', 'Clear Values'),
               downloadButton('SaveMatrix'),
+              actionButton('Help',tags$i('rhandsontable Help')),
               hr()
               #actionButton("SaveMatrix","Create Layoutfile", icon = icon("download"),class="btn btn-secondary")
               
            # )
           ),
-          box(title = 'Output Preview',
+          box(title = tags$b( 'Output Preview'),
               collapsible = TRUE,
               collapsed = T,
               status = 'primary',
@@ -183,17 +189,34 @@ ui <- dashboardPage(
             )
           ),
           box(
-            title=' ShinyMatrix Help',
+            title=tags$code(' rhandsontable Help'),
             collapsible = TRUE,
             collapsed=TRUE,
             status = 'primary',
-            Helptext_matlay_col
+            helpText("> Enter your values into the table. You can use letters,
+                      numbers and symbols as input. The cellsize adapt to the 
+                      amount of values automatically. The script exspects an input
+                      like 'EVC B1', separated by one space. If only one 
+                      word/number/synbol is entered it throws an NA.",
+                     tags$p(),
+                      "> You can copy paste and mark cells by clicking on the 
+                      cell/row/column you want to mark. By holding the bottom right
+                      corner of a cell you can drag their content across the table
+                      the content will be automatically copy and pasted.",
+                     tags$p(),
+                      ">With tab and the arrow keys you are able to move around the table.",
+                     tags$p(),
+                      ">The 'clear Values' button clears out the entire table and 
+                      the 'Download' button creates a csv file with can be either 
+                      opened or saved")
+          
+            )
           )
         )
-      )
-    )#
+      )#
+    )
   )
-)
+
 
 server <- function(input, output,session) {
   #reactive functions / does only reload if input changes
@@ -218,6 +241,30 @@ server <- function(input, output,session) {
   output$plate <- renderTable({
     plateLayout()
   })
+  #shinymatrixhelp
+  observeEvent(input$Help, {
+    showModal(modalDialog(
+      title = tags$code("rhandsontable Helptext"),
+      "> Enter your values into the table. You can use letters,
+                      numbers and symbols as input. The cellsize adapt to the 
+                      amount of values automatically. The script exspects an input
+                      like 'EVC B1', separated by one space. If only one 
+                      word/number/synbol is entered it throws an NA.",
+      tags$p(),
+      "> You can copy paste and mark cells by clicking on the 
+                      cell/row/column you want to mark. By holding the bottom right
+                      corner of a cell you can drag their content across the table
+                      the content will be automatically copy and pasted.",
+      tags$p(),
+      ">With tab and the arrow keys you are able to move around the table.",
+      tags$p(),
+      ">The 'clear Values' button clears out the entire table and 
+                      the 'Download' button creates a csv file with can be either 
+                      opened or saved",
+      easyClose = TRUE
+    ))
+  })
+  
   
   #plot output creation triggered by action button of data tab
   plateData <- eventReactive(input$loadData,{
@@ -240,11 +287,14 @@ server <- function(input, output,session) {
   output$groupPlot <- renderPlot({
     groupPlot()
   })
-  #####
+  ##############################################################################
   #shinyMatrix
   #observeEvent(input$SaveMatrix ,{write.table(input$sample,col.names=NA,'../../Layout.csv')})
   
   data_hot <- reactiveVal(matrix('', 8, 12))
+  
+  #data_hot<-reactiveValues()
+  #data_hot$df<-as.data.frame(matrix('', 8, 12))
   
   observeEvent(input$ClearMatrix,{
     output$mat_sample <- renderRHandsontable({
@@ -255,66 +305,98 @@ server <- function(input, output,session) {
       rhandsontable(dff, rowHeaders = T) %>% 
         hot_cols(colWidths = 120)
     })
-
+    
   })
   
   output$mat_sample <- renderRHandsontable({
-
+    
     dff = data_hot()
     colnames(dff) = c(1:12)
     
     rhandsontable(dff, rowHeaders = T) %>% 
-      hot_cols(colWidths = 120)
+      hot_cols(colWidths = 120) 
   })
   
   
   output$SaveMatrix <- downloadHandler(
-  filename = function() {
-    #'results.txt'
-    'layout.csv'
-  },
-  content = function(file) {
-    v = hot_to_r(input$mat_sample)
-    
-    results = '\t'
-    results =  paste0(results, paste(1:8, collapse =  '\t'))
-    results = paste0(results)
-    for(i in 1:nrow(v)){
+    filename = function() {
+      #'results.txt'
+      'layout.csv'
+    },
+    content = function(file) {
+      v = hot_to_r(input$mat_sample)
       
-      row_i = LETTERS[i]
+      #vv<-as.data.frame(v)
       
-      res_i = paste0(row_i, '\t')
-      for(k in 1:ncol(v)){
+      # for (i in 1:length(vv)){
+      # vv[,i]<-gsub(" ", "\n", vv[,i])
+      #vv[,i]<-paste0(vv[,i], "\t")
+      
+      
+      #}
+      
+      
+      
+      results = '\t'
+      results =  paste0(results, paste(1:12, collapse =  '\t'))
+      #results = paste0(results)
+      for(i in 1:nrow(v)){
         
-        vik = v[i,k] %>% as.character()
-        
-        if(vik!=''){
-          print(vik)
-          if(vik == 'blank'){
+        row_i = LETTERS[i]
+        print(v[i,])
+        res_i = paste0(row_i, '\t')
+        for(k in 1:ncol(v)){
+          
+          vik = v[i,k] %>% as.character()
+          
+          
+          
+          if(vik!=''){
+            #print(vik)
+            if(vik == 'blank'){
+              res_i = paste0(res_i, 
+                             vik,
+                             '\t',
+                             
+                             '')
+              
+            }else{
+              res_i = paste0(res_i, 
+                             '\"',strsplit(vik,' ')[[1]][1],
+                             '\n', 
+                             strsplit(vik,' ')[[1]][2],
+                             "\"",
+                             '\t',
+                             '')
+            }
+            
+          }else {
             res_i = paste0(res_i, 
                            vik,
                            '\t',
                            '')
-          }else{
-            res_i = paste0(res_i, 
-                           strsplit(vik,' ')[[1]][1],
-                           '\n', 
-                           strsplit(vik,' ')[[1]][2],
-                           '\t',
-                           '')
+            #print(paste0("*",i,k))
+            
+            
           }
-
+          
+          
         }
+        results = paste(results,'\n',res_i )
+        #results = paste0 ('"', v, '"')
+        #results = dQuote(v[2,2])
+        results = gsub(" ", "", results, fixed = TRUE)
+        
         
       }
-      results = paste(results,'\n',res_i )
-    }
-    write.matrix(results, file)
+      
+      write.matrix(results, file)
+      #write.table(results,file,quote = "[v]")
+      
+      #write.csv(df, file)
+    },
+    contentType = NULL
     
-     #write.csv(results, file)
-  },
-  contentType = NULL
-  
   )
   # observeEvent(input$SaveMatrix ,{
   #   
@@ -328,20 +410,23 @@ server <- function(input, output,session) {
   #                                 })
   
   #loop for /t and /n cleaning
-
+  
   
   
   observeEvent(input$sample, {
     print(input$sample)
     print(class(input$sample))
-    })
+  })
   
   
   #matcsv <- observeEvent(input$SaveMatrix ,{matcsv_helper(input,"../../Layout.csv")
-   # print("Funktioniert das ?")})
+  # print("Funktioniert das ?")})
   
   output$testmat <- renderTable(input$sample)
-  #####
+  
+  
+  
+  ##############################################################################
   #ErrorHandling
   
   output$PlateDateErrorText <- renderText({
