@@ -499,7 +499,7 @@ server <- function(input, output,session) {
             results = paste(results,'\n',res_i )
           }
           
-          #
+          #use substr to remove quotationat front and end of a resulting row res_i
           res_i = substr(res_i,1,nchar(res_i)-2)
           print(res_i)
           
