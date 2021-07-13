@@ -388,30 +388,37 @@ server <- function(input, output,session) {
   })
   #downloadhadler for downloading a platelayout csv file
   output$SaveMatrix <- downloadHandler(
+    #csv filename pasted together of radioButton selection
+    #and'_layout.csv' string
     filename = function() {
       paste0(input$rad1,'_layout.csv')
     },
+    #file content is specified
     content = function(file) {
+      #handsontableobject (hot) is converted to R object
       v = hot_to_r(input$mat_sample)
       #executed when radioButton 'Synergy'is selected
       if(input$rad1 == 'Synergy'){
-        
+
         results = '\t'
+        #columns labelled 1 to 12 are appended and collapsed with 'tab'
         results =  paste0(results, paste(1:12, collapse =  '\t'))
         
         for(i in 1:nrow(v)){
-          
+          #rows are named using LETTERS()
           row_i = LETTERS[i]
           print(v[i,])
+          #rows need to end with 'tab',synergy format demands it see Appendix
           res_i = paste0(row_i, '\t')
           for(k in 1:ncol(v)){
-            
+            #spreadsheet values get converted into character
             vik = v[i,k] %>% as.character()
             
             
-            
+            #run if spreadsheet cell is not empty
             if(vik!=''){
-              
+              #run if spreasheet cell is filled with blank string
+              #only a tab is appended 
               if(vik == 'blank'){
                 res_i = paste0(res_i, 
                                vik,
@@ -420,6 +427,9 @@ server <- function(input, output,session) {
                                '')
                 
               }else{
+                #run if cell content is not a blank string
+                #content is split and 'newline' is added between
+                #because of the synergy format
                 res_i = paste0(res_i, 
                                '\"',strsplit(vik,' ')[[1]][1],
                                '\n', 
@@ -428,7 +438,7 @@ server <- function(input, output,session) {
                                '\t',
                                '')
               }
-              
+            #if spreadsheet cells are completly empty
             }else {
               res_i = paste0(res_i, 
                              vik,
@@ -439,22 +449,26 @@ server <- function(input, output,session) {
             
             
           }
+          #result obkect pasted together
           results = paste(results,'\n',res_i )
+          #possible whitespaces are removed with gsub()
           results = gsub(" ", "", results, fixed = TRUE)
           
           
         }
         #executed when RadioButton 'BiolecPro' is selected
+        #difference to code above is that Biolector format only 
+        #uses 'semicolons'as seperator
       }else{
         
         results = ';'
-        
+        #semicolon instead of tab
         results =  paste0(results, paste(1:8, collapse = ';' ))
         results = paste0(results)
         for(i in 1:nrow(v)){
           
           row_i = LETTERS[i]
-          
+          #semicolon instead of 'tab'
           res_i = paste0(row_i,';')
           for(k in 1:ncol(v)){
             
@@ -466,6 +480,7 @@ server <- function(input, output,session) {
                                vik,
                                '')
               }else{
+                #cell contents in quotationmarks since BiolectorFormat demands it
                 res_i = paste0(res_i, 
                                '\"',
                                vik,
@@ -484,7 +499,7 @@ server <- function(input, output,session) {
             results = paste(results,'\n',res_i )
           }
           
-          
+          #
           res_i = substr(res_i,1,nchar(res_i)-2)
           print(res_i)
           
