@@ -1,16 +1,17 @@
+#bioleqtor
 library(shiny)
 library(shinydashboard)
 library(MASS)
 library(platexpress)
 library(rhandsontable)
 library(dplyr)
-library(featurefinder)
-library(dashboardthemes)
-library(ggplot2)
-library(shinycssloaders)
+library(tidyr)
+getwd()
+setwd
+
 source("../platexpress_module/platexpress_interactions.R")
 
-options(shiny.reactlog = TRUE)
+#options(shiny.reactlog = TRUE)
 
 
 
@@ -23,18 +24,16 @@ ui <- dashboardPage(
       menuItem("MatrixLayout", tabName = "matlay", icon = icon("outdent")),
       menuItem("Plate Layout", tabName = "layout", icon = icon("file-upload")),
       menuItem("Plate Data", tabName = "data", icon = icon("filter")),
-      menuItem("View Groups", tabName = "groups", icon = icon("vials")),
-      menuItem("Graphs", tabName = "grasta", icon = icon("chart-line"))
+      menuItem("View Groups", tabName = "groups", icon = icon("vials"))
+      
     )
   ),
   #definitions of a tab content inside dashboardBody
   #ui's are reachable with tabItems(tabItem(tabName),tabItem(...))
   dashboardBody(
-    #shinyDashboardThemes(
-      #theme = "purple_gradient"),
     tabItems(
       tabItem(
-      #ui for readPlateMap 
+        #ui for readPlateMap 
         tabName="layout",
         fluidRow(
           box(
@@ -45,7 +44,7 @@ ui <- dashboardPage(
                           "Comma" = ",",
                           "Dot" = ".",
                           "Double-Dot"=":")),
-		    #within-field separator
+            #within-field separator
             selectInput("fsep", "Field Separator:",
                         c("Newline" = "\n",
                           "Tab" = "\t",
@@ -58,9 +57,9 @@ ui <- dashboardPage(
             textInput("asep","substance:amount separator"),
             fileInput("file1", "Choose a plate layout CSV File", accept = ".csv"),
             #checkboxInput("header", "Header", TRUE),
-		        actionButton("changeLayout","Change Layout", icon = icon("file-upload"),class="btn btn-secondary")
-		        #dismiss all other submitButton's from the ui otherwise the actionButton's wan't
-		        #work anymore...
+            actionButton("changeLayout","Change Layout", icon = icon("file-upload"),class="btn btn-secondary")
+            #dismiss all other submitButton's from the ui otherwise the actionButton's wan't
+            #work anymore...
             #submitButton("Submit")
           ),
           box(
@@ -70,13 +69,13 @@ ui <- dashboardPage(
         )        
       ),
       tabItem(
-      #ui for readPlateData 
+        #ui for readPlateData 
         tabName = "data",
         fluidRow(
           column(
             12,
             plotOutput("data")
-            )
+          )
         ),
         fluidRow(
           box(
@@ -91,7 +90,7 @@ ui <- dashboardPage(
                           "BioLector" = "BioLector",
                           "BioLector Pro"="BioLectorPro")),
             fileInput("file2", "Choose a plate data CSV File", accept = ".csv"),
-            actionButton("loadData","Load Data",class="btn btn-secondary",icon = icon("download"))
+            actionButton("loadData","Load Data",class="btn btn-secondary")
             #submitButton("Submit")
           ),
           box(
@@ -111,15 +110,15 @@ ui <- dashboardPage(
                          h3("Select the last column to display"), 
                          value = 12,
                          min = 1,
-                         max = 12),
-           # box(textOutput("PlateDateErrorText")
+                         max = 12)
+            #box(textOutput("PlateDateErrorText")
             )
           )
-        ),
-
-      
+        
+    
+      ),
       tabItem(
-      #ui for viewGroups
+        #ui for viewGroups
         tabName="groups",
         fluidRow(
           box(
@@ -143,7 +142,7 @@ ui <- dashboardPage(
                 min = 1,
                 max = 12
               ),
-              actionButton("analyseGroups","Load Group Graph",class="btn btn-secondary",icon = icon("project-diagram"))
+              actionButton("analyseGroups","Load Group Graph",class="btn btn-secondary")
               #submitButton("Submit")
             )
           )
@@ -153,97 +152,59 @@ ui <- dashboardPage(
             plotOutput("groupPlot")
           )
         )
-
+        
         
       ),
-        tabItem(
+      tabItem(
         #ui for Layoutcreation
         tabName = "matlay",
         fluidRow(
           # box(
-            column(
-              12,
-              
-              rhandsontable::rHandsontableOutput('mat_sample'),
-              br(),
-              # matrixInput(
-              #   value = m,
-              #   rows = list(
-              #     extend = TRUE,editableNames = TRUE
-              #   ),
-              #   cols = list(
-              #     names = TRUE,editableNames = TRUE,extend = TRUE
-              #   )
-              # ),
-              actionButton('ClearMatrix', 'Clear Values',icon = icon("eraser")),
-              downloadButton('SaveMatrix',icon = icon("save")),
-              actionButton('Help',tags$i('rhandsontable Help'),icon = icon("question")),
-              hr()
-              #actionButton("SaveMatrix","Create Layoutfile", icon = icon("download"),class="btn btn-secondary")
-              
-           # )
+          column(
+            12,
+            
+            rhandsontable::rHandsontableOutput('mat_sample'),
+            br(),
+            shiny::radioButtons('rad1','Platereader Type', choices = c('Synergy','Bioleq'), inline  = T),
+
+            # matrixInput(
+            #   value = m,
+            #   rows = list(
+            #     extend = TRUE,editableNames = TRUE
+            #   ),
+            #   cols = list(
+            #     names = TRUE,editableNames = TRUE,extend = TRUE
+            #   )
+            # ),
+            actionButton('ClearMatrix', 'Clear Values'),
+            downloadButton('SaveMatrix'),
+            hr()
+            #actionButton("SaveMatrix","Create Layoutfile", icon = icon("download"),class="btn btn-secondary")
+            
+            # )
           ),
-          box(title = tags$b( 'Output Preview'),
+          box(title = 'Output Preview',
               collapsible = TRUE,
               collapsed = T,
               status = 'primary',
-            column(12,
-            tableOutput("testmat")
-            )
+              column(12,
+                     tableOutput("testmat")
+              )
           ),
           box(
-            title=tags$code(' rhandsontable Help'),
+            title=' ShinyMatrix Help',
             collapsible = TRUE,
             collapsed=TRUE,
             status = 'primary',
-            helpText("> Enter your values into the table. You can use letters,
-                      numbers and symbols as input. The cellsize adapt to the 
-                      amount of values automatically. The script exspects an input
-                      like 'EVC B1', separated by one space. If only one 
-                      word/number/synbol is entered it throws an NA.",
-                     tags$p(),
-                      "> You can copy paste and mark cells by clicking on the 
-                      cell/row/column you want to mark. By holding the bottom right
-                      corner of a cell you can drag their content across the table
-                      the content will be automatically copy and pasted.",
-                     tags$p(),
-                      ">With tab and the arrow keys you are able to move around the table.",
-                     tags$p(),
-                      ">The 'clear Values' button clears out the entire table and 
-                      the 'Download' button creates a csv file with can be either 
-                      opened or saved")
-          
-            )
-          )
-        ),
-    tabItem(
-      #graphs and stats
-      tabName = "grasta",
-      fluidRow(
-        # box(
-        column(
-          12,
-          plotOutput("grastaPlot") %>% withSpinner(),
-          uiOutput('plot_id'),
-          box(
-            selectInput("ggplot", "ggplot2:",
-                        c("line graph" = "geom_line()",
-                          "bar chart" = "geom_col()"))
-            
-           # actionButton("plotteggplot","Plottet beliebigen ggplot",class="btn btn-secondary",icon = icon("beer"))
-          )
-          
-          
-          
+            Helptext_matlay_col
           )
         )
       )
-    )
+    )#
   )
 )
 
 
-# server -----
 server <- function(input, output,session) {
   #reactive functions / does only reload if input changes
   #maybe not needed because of submit buttons
@@ -251,7 +212,7 @@ server <- function(input, output,session) {
     readPlateLayoutFile(input)
   })
   getPlateData <- reactive({
-     readDataFile(input)
+    readDataFile(input)
   })
   
   output$simplecsv <- renderTable({
@@ -267,102 +228,6 @@ server <- function(input, output,session) {
   output$plate <- renderTable({
     plateLayout()
   })
-
-    # reactove variable for plots =----
-    plotdataids <- reactive({
-      
-      options(scipen = 999)
-      file = input$file2
-
-      dd1 = readDataFile( input)
-
-      names_elim = c("Time", "xids", "wells","dataIDs")
-      plot_list <- setdiff(names(dd1),names_elim)
-            
-      print(plot_list)
-      
-      plots <- list()
-
-      for(p in plot_list) {
-        print(p)
-        v1 = dd1[[p]]
-        data1 = v1$data
-        data1 = data.frame(Time = v1$time, data1)
-        
-        
-        data1 <- data1 %>% 
-          pivot_longer(-Time)
-        print(data1)
-        
-        if(input$ggplot == 'geom_col()'){
-          plot_p <-  data1 %>% 
-            ggplot(aes(x = Time, y = value, fill = name)) +
-            geom_col() +
-            facet_wrap(~name) + 
-            theme(legend.position = 'none') + 
-            ylab('Measure') + 
-            ggtitle(p)
-        }else if(input$ggplot == 'geom_line()'){
-            plot_p <-  data1 %>% 
-              ggplot(aes(x = Time, y = value, color = name)) +
-              geom_line() +
-              facet_wrap(~name) + 
-              theme(legend.position = 'none') + 
-              ylab('Measure') + 
-              ggtitle(p)
-        }
-
-        
-        plots[[p]] = plot_p
-        print(plots[[p]])
-        
-      }
-      
-      plots
-    })
-  
-  
-  output$plot_id <- renderUI({
-    req(plotdataids())
-    selectInput('plot_id','Select Plot', choices = names(plotdataids()))
-  })
-  
-  # plot tab ----
-  
-  # observeEvent(input$plotteggplot,{
-    
-    output$grastaPlot <-renderPlot({
-      req(input$plot_id)
-      plotdataids()[[input$plot_id]]
-    })
-  # })
-  
-
-  
-  #shinymatrixhelp
-  observeEvent(input$Help, {
-    showModal(modalDialog(
-      title = tags$code("rhandsontable Helptext"),
-      "> Enter your values into the table. You can use letters,
-                      numbers and symbols as input. The cellsize adapt to the 
-                      amount of values automatically. The script exspects an input
-                      like 'EVC B1', separated by one space. If only one 
-                      word/number/synbol is entered it throws an NA.",
-      tags$p(),
-      "> You can copy paste and mark cells by clicking on the 
-                      cell/row/column you want to mark. By holding the bottom right
-                      corner of a cell you can drag their content across the table
-                      the content will be automatically copy and pasted.",
-      tags$p(),
-      ">With tab and the arrow keys you are able to move around the table.",
-      tags$p(),
-      ">The 'clear Values' button clears out the entire table and 
-                      the 'Download' button creates a csv file with can be either 
-                      opened or saved",
-      easyClose = TRUE
-    ))
-  })
-  
   
   #plot output creation triggered by action button of data tab
   plateData <- eventReactive(input$loadData,{
@@ -391,9 +256,6 @@ server <- function(input, output,session) {
   
   data_hot <- reactiveVal(matrix('', 8, 12))
   
-  #data_hot<-reactiveValues()
-  #data_hot$df<-as.data.frame(matrix('', 8, 12))
-  
   observeEvent(input$ClearMatrix,{
     output$mat_sample <- renderRHandsontable({
       
@@ -412,86 +274,144 @@ server <- function(input, output,session) {
     colnames(dff) = c(1:12)
     
     rhandsontable(dff, rowHeaders = T) %>% 
-      hot_cols(colWidths = 120) 
+      hot_cols(colWidths = 120)
   })
   
   
   output$SaveMatrix <- downloadHandler(
     filename = function() {
-      #'results.txt'
-      'layout.csv'
+      paste0(input$rad1,'_layout.csv')
     },
     content = function(file) {
       v = hot_to_r(input$mat_sample)
+      # vrm = which(v[,1] == '')
+      # if(length(vrm)>0){
+      #   v = v[-vrm,]
+      # }
+
       
-      #vv<-as.data.frame(v)
-      
-      # for (i in 1:length(vv)){
-      # vv[,i]<-gsub(" ", "\n", vv[,i])
-      #vv[,i]<-paste0(vv[,i], "\t")
-      
-      
-      #}
-      
-      
-      
-      results = '\t'
-      results =  paste0(results, paste(1:12, collapse =  '\t'))
-      #results = paste0(results)
-      for(i in 1:nrow(v)){
+      if(input$rad1 == 'Synergy'){
         
-        row_i = LETTERS[i]
-        print(v[i,])
-        res_i = paste0(row_i, '\t')
-        for(k in 1:ncol(v)){
+        results = '\t'
+        results =  paste0(results, paste(1:12, collapse =  '\t'))
+        #results = paste0(results)
+        for(i in 1:nrow(v)){
           
-          vik = v[i,k] %>% as.character()
-          
-          
-          
-          if(vik!=''){
-            #print(vik)
-            if(vik == 'blank'){
+          row_i = LETTERS[i]
+          print(v[i,])
+          res_i = paste0(row_i, '\t')
+          for(k in 1:ncol(v)){
+            
+            vik = v[i,k] %>% as.character()
+            
+            
+            
+            if(vik!=''){
+              #print(vik)
+              if(vik == 'blank'){
+                res_i = paste0(res_i, 
+                               vik,
+                               '\t',
+                               
+                               '')
+                
+              }else{
+                res_i = paste0(res_i, 
+                               '\"',strsplit(vik,' ')[[1]][1],
+                               '\n', 
+                               strsplit(vik,' ')[[1]][2],
+                               "\"",
+                               '\t',
+                               '')
+              }
+              
+            }else {
               res_i = paste0(res_i, 
                              vik,
                              '\t',
-                             
                              '')
+              #print(paste0("*",i,k))
               
-            }else{
-              res_i = paste0(res_i, 
-                             '\"',strsplit(vik,' ')[[1]][1],
-                             '\n', 
-                             strsplit(vik,' ')[[1]][2],
-                             "\"",
-                             '\t',
-                             '')
+              
             }
             
-          }else {
-            res_i = paste0(res_i, 
-                           vik,
-                           '\t',
-                           '')
-            #print(paste0("*",i,k))
+            
+          }
+          results = paste(results,'\n',res_i )
+          #results = paste0 ('"', v, '"')
+          #results = dQuote(v[2,2])
+          results = gsub(" ", "", results, fixed = TRUE)
+          
+          
+        }
+      }else{
+        ###
+        results = ';'
+        #print(paste0("1",results))
+        results =  paste0(results, paste(1:8, collapse = ';' ))
+        #print(paste0("2",results))
+        results = paste0(results)
+        #print(paste0("3",results))
+        for(i in 1:nrow(v)){
+          
+          row_i = LETTERS[i]
+          
+          res_i = paste0(row_i,';')
+          #print(paste0("1",res_i))
+          for(k in 1:ncol(v)){
+            
+            vik = v[i,k] %>% as.character()
+            
+            if(vik!=''){
+              #print(vik)
+              if(vik == 'blank'){
+                res_i = paste0(res_i, 
+                               vik,
+                               '')
+                #print(paste0("2",res_i))
+              }else{
+                res_i = paste0(res_i, 
+                               '\"',
+                               vik,
+                               "\"",
+                               
+                               '',';')
+                #print(paste0("3",res_i))
+              }
+            
+              
+            }
             
             
           }
           
+          if(v[i,1] !=''){
+            results = paste(results,'\n',res_i )
+          }
+          
+          #if (nchar(res_i != 2))
+             
+          res_i = substr(res_i,1,nchar(res_i)-2)
+          print(res_i)
+          
+          #results = paste0 ('"', v, '"')
+          #results = dQuote(v[2,2])
+          results = gsub(" ", "", results, fixed = TRUE)
+          
+          
+          
           
         }
-        results = paste(results,'\n',res_i )
-        #results = paste0 ('"', v, '"')
-        #results = dQuote(v[2,2])
-        results = gsub(" ", "", results, fixed = TRUE)
-        
-        
+        ###
       }
+      ###
+
       
+      #download part
       write.matrix(results, file)
       #write.table(results,file,quote = "[v]")
       
-      #write.csv(df, file)
+      #write.csv(results, file)
     },
     contentType = NULL
     
@@ -522,8 +442,6 @@ server <- function(input, output,session) {
   
   output$testmat <- renderTable(input$sample)
   
-  
-  
   ##############################################################################
   #ErrorHandling
   
@@ -540,12 +458,10 @@ server <- function(input, output,session) {
   ####
   isthereaFile <- observeEvent (input$changeLayout, {
     validate(
-      need(!is.null(input$file1),"Plea se upload a file!")
+      need(!is.null(input$file1),"Please upload a file!")
     )
   })
   
 }
 
 shinyApp(ui, server)
-
-
