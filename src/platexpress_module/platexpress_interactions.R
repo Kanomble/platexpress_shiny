@@ -171,46 +171,5 @@ getGroupPlot <- function(input,plate) {
   return(out)
 }
 
-#plotfunction
-
-# plotdataids <- function(input) {
-#   options(scipen = 999)
-#   
-#   dl = readDataFile(input)
-#   print(dl)
-#   
-#   names_elim = c("Time", "xids", "wells","dataIDs")
-#   plot_list <- setdiff(names(dl),names_elim)
-#   plot_list               
-#   print(plot_list)
-#   
-#   plots <- list()
-#   plot_list 
-#   
-#   for(p in plot_list) {
-#     
-#     v1 = dl[[p]]
-#     data1 = v1$data
-#     data1 = data.frame(Time = v1$time, data1)
-#     
-#     
-#     data1 <- data1 %>% 
-#       pivot_longer(-Time)
-#     print(data1)
-#     
-#     plot_p <-  data1 %>% 
-#       ggplot(aes(x = Time, y = value, fill = name)) +
-#       geom_col() +
-#       facet_wrap(~name) + 
-#       theme(legend.position = 'none') + 
-#       ylab('Measure') + 
-#       ggtitle(p)
-#     
-#     plots[[p]] = plot_p
-#     print(plots[[p]])
-#     
-#   }
-# }
-
   
 

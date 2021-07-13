@@ -170,7 +170,7 @@ ui <- dashboardPage(
             rhandsontable::rHandsontableOutput('mat_sample'),
             br(),
             #implementing shiny::radioButtons to specify which kind of layout file should be created
-            shiny::radioButtons('rad1','Platereader Type', choices = c('Synergy','Bioleq'), inline  = T),
+            shiny::radioButtons('rad1','Platereader Type', choices = c('Synergy','BiolecPro'), inline  = T),
             #if pressed clears all values from mat_sample
             actionButton('ClearMatrix', 'Clear Values',icon = icon("eraser")),
             #if pressed values inside rHandsontable getting downloaded as csv file 
@@ -215,40 +215,39 @@ ui <- dashboardPage(
 
 # server -----
 server <- function(input, output,session) {
-  #reactive functions / does only reload if input changes
+  #reactive function only reloads if inputs in 'layout' tab changes
   getLayout <- reactive({
     readPlateLayoutFile(input)
   })
+  #reloads if input in 'data'tab changes
   getPlateData <- reactive({
     readDataFile(input)
   })
-  
+  #generate a static data table containing the data in file1
   output$simplecsv <- renderTable({
     req(input$file1)
     read.csv(input$file1$datapath)
   })
-  #actual output
   #table output creation triggered by action button of layout tab
   plateLayout <- eventReactive(input$changeLayout,{
     getLayout()
   })
-  
+  #table with value of plateLayout is generated
   output$plate <- renderTable({
     plateLayout()
   })
   
-  # reactove variable for plots 
+  # reactive variable for plots inside 'grasta' tab
   output$plot_id <- renderUI({
     req(plotdataids())
     selectInput('plot_id','Select Plot', choices = names(plotdataids()))
   })
   
-  # plot tab 
+  #allows to plot ggplot objects 
   plotdataids <- reactive({
     #prevent scintific notation    
     options(scipen = 999)
-# ?
-    #file = input$file2
+
     #assign data to dd1    
     dd1 = readDataFile( input)
     #dataIds to eliminate out of dataset    
@@ -303,8 +302,7 @@ server <- function(input, output,session) {
   })
   
   
-  # observeEvent(input$plotteggplot,{
-  
+  #renderPLot assigns the ggplot of the in 'plot_id' selected data id
   output$grastaPlot <-renderPlot({
     req(input$plot_id)
     plotdataids()[[input$plot_id]]
@@ -313,7 +311,7 @@ server <- function(input, output,session) {
   
   
   
-  #rhandsontable helptext
+  #rhandsontable helptext 'mat_lay' tab
   observeEvent(input$Help, {
     showModal(modalDialog(
       title = tags$code("rhandsontable Helptext"),
@@ -338,16 +336,17 @@ server <- function(input, output,session) {
   })
   
   
-  #plot output creation triggered by action button of data tab
+  #creation triggered by action button of 'data' tab
   plateData <- eventReactive(input$loadData,{
     plate <- getLayout()
     readPlateDataFile(input,plate)
   })
+  #plot aboce object
   output$data <- renderPlot({
     plateData()
   })
   
-  #group plot output
+  #group plot output if actionnButton in 'viewGroups' tab is pressed
   groupPlot <- eventReactive(input$analyseGroups,{
     if(input$groups == ""){
       readPlateDataFile(input,getLayout())
@@ -360,12 +359,13 @@ server <- function(input, output,session) {
     groupPlot()
   })
 
-  
+#rHandsontablepart 'mat_lay' tab
+  #create a 8x12 matrix to which other elements can take dependencies 
   data_hot <- reactiveVal(matrix('', 8, 12))
   
-  #data_hot<-reactiveValues()
-  #data_hot$df<-as.data.frame(matrix('', 8, 12))
-  
+
+  #if actionButton 'ClearMatrix' is pressed all previous inputs 
+  #are overwritten with a new mat_sample
   observeEvent(input$ClearMatrix,{
     output$mat_sample <- renderRHandsontable({
       
@@ -377,33 +377,28 @@ server <- function(input, output,session) {
     })
     
   })
-  
+  #generating of interactive spreadsheet
   output$mat_sample <- renderRHandsontable({
-    
+    #data_hot is the 8x12 matrix
     dff = data_hot()
     colnames(dff) = c(1:12)
     
     rhandsontable(dff, rowHeaders = T) %>% 
       hot_cols(colWidths = 120) 
   })
-  
+  #downloadhadler for downloading a platelayout csv file
   output$SaveMatrix <- downloadHandler(
     filename = function() {
       paste0(input$rad1,'_layout.csv')
     },
     content = function(file) {
       v = hot_to_r(input$mat_sample)
-      # vrm = which(v[,1] == '')
-      # if(length(vrm)>0){
-      #   v = v[-vrm,]
-      # }
-      
-      
+      #executed when radioButton 'Synergy'is selected
       if(input$rad1 == 'Synergy'){
         
         results = '\t'
         results =  paste0(results, paste(1:12, collapse =  '\t'))
-        #results = paste0(results)
+        
         for(i in 1:nrow(v)){
           
           row_i = LETTERS[i]
@@ -416,7 +411,7 @@ server <- function(input, output,session) {
             
             
             if(vik!=''){
-              #print(vik)
+              
               if(vik == 'blank'){
                 res_i = paste0(res_i, 
                                vik,
@@ -439,9 +434,7 @@ server <- function(input, output,session) {
                              vik,
                              '\t',
                              '')
-              #print(paste0("*",i,k))
-              
-              
+ 
             }
             
             
@@ -451,6 +444,7 @@ server <- function(input, output,session) {
           
           
         }
+        #executed when RadioButton 'BiolecPro' is selected
       }else{
         
         results = ';'
@@ -508,14 +502,7 @@ server <- function(input, output,session) {
     
   )
 
-  observeEvent(input$sample, {
-    print(input$sample)
-    print(class(input$sample))
-  })
-  
-  
-  
-  output$testmat <- renderTable(input$sample)
+
   
 }
 
